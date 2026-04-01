@@ -1,0 +1,288 @@
+// ============================================================================
+// Jenkinsfile — Risk Scoring Platform CI/CD Pipeline
+// ============================================================================
+// Pipeline: Build → Test → Stage → Approve → Deploy → Validate
+// Trigger:  Webhook on merge to 'release/*' branches
+// Approval: Manual gate before production deployment
+// ============================================================================
+
+pipeline {
+    agent {
+        label 'risk-platform-build'
+    }
+
+    environment {
+        APP_NAME           = 'risk-scoring-engine'
+        ARTIFACTORY_URL    = 'https://artifactory.fiserv.internal/risk-platform'
+        DEPLOY_HOSTS       = 'falcon-{01..04}.prod.internal'
+        SPLUNK_HEC_URL     = credentials('splunk-hec-url')
+        SPLUNK_HEC_TOKEN   = credentials('splunk-hec-token')
+        CONTROLM_TOKEN     = credentials('controlm-api-token')
+        PAGERDUTY_KEY      = credentials('pagerduty-routing-key')
+        SONAR_TOKEN        = credentials('sonarqube-token')
+    }
+
+    options {
+        timeout(time: 2, unit: 'HOURS')
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+        disableConcurrentBuilds()
+        timestamps()
+    }
+
+    parameters {
+        string(name: 'RELEASE_VERSION', description: 'Release version (e.g., v3.15.0)')
+        booleanParam(name: 'AUTO_ROLLBACK', defaultValue: true, description: 'Auto-rollback on validation failure')
+        booleanParam(name: 'SKIP_SONAR', defaultValue: false, description: 'Skip SonarQube analysis')
+    }
+
+    stages {
+        // ─── Stage 1: Build ─────────────────────────────────────────
+        stage('Build') {
+            steps {
+                echo "Building ${APP_NAME} ${params.RELEASE_VERSION}"
+
+                sh '''
+                    mvn clean package -DskipTests \
+                        -Drevision=${RELEASE_VERSION} \
+                        -Dmaven.repo.local=.m2/repository
+                '''
+
+                // Generate and verify artifact checksum
+                sh '''
+                    sha256sum target/${APP_NAME}.war > target/${APP_NAME}.war.sha256
+                    echo "Artifact checksum:"
+                    cat target/${APP_NAME}.war.sha256
+                '''
+            }
+            post {
+                success {
+                    archiveArtifacts artifacts: "target/${APP_NAME}.war, target/${APP_NAME}.war.sha256"
+                }
+            }
+        }
+
+        // ─── Stage 2: Unit & Integration Tests ─────────────────────
+        stage('Test') {
+            parallel {
+                stage('Unit Tests') {
+                    steps {
+                        sh 'mvn test -Dtest.profile=unit'
+                    }
+                    post {
+                        always {
+                            junit 'target/surefire-reports/*.xml'
+                        }
+                    }
+                }
+                stage('Integration Tests') {
+                    steps {
+                        sh '''
+                            mvn verify -Dtest.profile=integration \
+                                -Dcoherence.test.cluster=true \
+                                -Doracle.test.url=jdbc:oracle:thin:@test-db:1521/RISKTEST
+                        '''
+                    }
+                    post {
+                        always {
+                            junit 'target/failsafe-reports/*.xml'
+                        }
+                    }
+                }
+            }
+        }
+
+        // ─── Stage 3: Code Quality ─────────────────────────────────
+        stage('Code Quality') {
+            when {
+                expression { return !params.SKIP_SONAR }
+            }
+            steps {
+                withSonarQubeEnv('SonarQube-Prod') {
+                    sh '''
+                        mvn sonar:sonar \
+                            -Dsonar.projectKey=risk-scoring-engine \
+                            -Dsonar.projectVersion=${RELEASE_VERSION}
+                    '''
+                }
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        // ─── Stage 4: Publish Artifact ──────────────────────────────
+        stage('Publish') {
+            steps {
+                sh '''
+                    curl -u ${ARTIFACTORY_CREDS} -T target/${APP_NAME}.war \
+                        "${ARTIFACTORY_URL}/${APP_NAME}/${RELEASE_VERSION}/${APP_NAME}-${RELEASE_VERSION}.war"
+                    curl -u ${ARTIFACTORY_CREDS} -T target/${APP_NAME}.war.sha256 \
+                        "${ARTIFACTORY_URL}/${APP_NAME}/${RELEASE_VERSION}/${APP_NAME}-${RELEASE_VERSION}.war.sha256"
+                '''
+                echo "Artifact published: ${ARTIFACTORY_URL}/${APP_NAME}/${RELEASE_VERSION}/"
+            }
+        }
+
+        // ─── Stage 5: Stage Deployment ──────────────────────────────
+        stage('Deploy to Staging') {
+            steps {
+                echo "Deploying to staging environment..."
+                sh '''
+                    ansible-playbook deploy-risk-platform.yml \
+                        -i inventory/staging \
+                        -e "release_version=${RELEASE_VERSION}" \
+                        -e "environment=staging"
+                '''
+            }
+        }
+
+        // ─── Stage 6: Staging Validation ────────────────────────────
+        stage('Staging Validation') {
+            steps {
+                sh '''
+                    ./scripts/deploy_validator.sh \
+                        --release ${RELEASE_VERSION} \
+                        --environment staging \
+                        --verbose
+                '''
+            }
+        }
+
+        // ─── Stage 7: Production Approval Gate ──────────────────────
+        stage('Production Approval') {
+            steps {
+                script {
+                    def approval = input(
+                        message: "Deploy ${APP_NAME} ${params.RELEASE_VERSION} to PRODUCTION?",
+                        ok: 'Deploy to Production',
+                        submitterParameter: 'approver',
+                        parameters: [
+                            string(name: 'CAB_TICKET', description: 'Change Advisory Board ticket number'),
+                            booleanParam(name: 'RUNBOOK_REVIEWED', defaultValue: false, description: 'I have reviewed the deployment runbook'),
+                            booleanParam(name: 'ROLLBACK_TESTED', defaultValue: false, description: 'Rollback procedure has been verified in staging')
+                        ]
+                    )
+                    env.CAB_TICKET = approval.CAB_TICKET
+                    env.APPROVED_BY = approval.approver
+
+                    if (!approval.RUNBOOK_REVIEWED || !approval.ROLLBACK_TESTED) {
+                        error("Deployment blocked: Runbook review and rollback testing are mandatory")
+                    }
+                }
+            }
+        }
+
+        // ─── Stage 8: Pre-Deploy Production Health ──────────────────
+        stage('Pre-Deploy Health Check') {
+            steps {
+                sh '''
+                    echo "Recording production baseline..."
+                    ./scripts/health_check.sh --verbose > /tmp/pre_deploy_health.log 2>&1
+
+                    echo "Snapshotting current config..."
+                    ssh deploy-host.prod.internal \
+                        "cd /opt/fiserv/falcon/config && git tag pre-deploy-$(date +%Y%m%d-%H%M)"
+                '''
+            }
+        }
+
+        // ─── Stage 9: Production Deployment ─────────────────────────
+        stage('Deploy to Production') {
+            steps {
+                // Notify stakeholders
+                sh '''
+                    curl -X POST "${SLACK_WEBHOOK}" \
+                        -H "Content-Type: application/json" \
+                        -d '{"text":"🚀 DEPLOYMENT STARTING: '${APP_NAME}' '${RELEASE_VERSION}' to PRODUCTION (CAB: '${CAB_TICKET}', approved by: '${APPROVED_BY}')"}'
+                '''
+
+                // Hold batch jobs
+                sh '''
+                    curl -sk -X POST -H "Authorization: Bearer ${CONTROLM_TOKEN}" \
+                        "${CONTROLM_API}/run/jobs/hold?folder=RISK_PLATFORM"
+                '''
+
+                // Rolling deployment
+                sh '''
+                    ansible-playbook deploy-risk-platform.yml \
+                        -i inventory/production \
+                        -e "release_version=${RELEASE_VERSION}" \
+                        -e "environment=production" \
+                        -e "rolling_update=true" \
+                        -e "health_gate_wait=60"
+                '''
+            }
+        }
+
+        // ─── Stage 10: Production Validation ────────────────────────
+        stage('Production Validation') {
+            steps {
+                sh '''
+                    ./scripts/deploy_validator.sh \
+                        --release ${RELEASE_VERSION} \
+                        --verbose \
+                        $( [ "${AUTO_ROLLBACK}" = "true" ] && echo "--rollback-on-fail" )
+                '''
+            }
+            post {
+                failure {
+                    script {
+                        if (params.AUTO_ROLLBACK) {
+                            echo "VALIDATION FAILED — Initiating auto-rollback"
+                            sh '''
+                                curl -X POST "${SLACK_WEBHOOK}" \
+                                    -H "Content-Type: application/json" \
+                                    -d '{"text":"🔴 ROLLBACK INITIATED: '${APP_NAME}' '${RELEASE_VERSION}' validation failed"}'
+                            '''
+                            // Rollback would be triggered here
+                        }
+                    }
+                }
+            }
+        }
+
+        // ─── Stage 11: Post-Deploy ──────────────────────────────────
+        stage('Post-Deploy') {
+            steps {
+                // Release batch holds
+                sh '''
+                    curl -sk -X POST -H "Authorization: Bearer ${CONTROLM_TOKEN}" \
+                        "${CONTROLM_API}/run/jobs/free?folder=RISK_PLATFORM"
+                '''
+
+                // Trigger cache warmup
+                sh '''
+                    curl -sk -X POST -H "Authorization: Bearer ${CONTROLM_TOKEN}" \
+                        "${CONTROLM_API}/run/jobs/runNow?jobname=RISK_CACHE_WARMUP"
+                '''
+
+                // Notify success
+                sh '''
+                    curl -X POST "${SLACK_WEBHOOK}" \
+                        -H "Content-Type: application/json" \
+                        -d '{"text":"✅ DEPLOYMENT COMPLETE: '${APP_NAME}' '${RELEASE_VERSION}' deployed to PRODUCTION successfully"}'
+                '''
+
+                // Send deployment event to Splunk
+                sh '''
+                    curl -sk -H "Authorization: Splunk ${SPLUNK_HEC_TOKEN}" \
+                        -d '{"event":{"type":"deployment","app":"'${APP_NAME}'","version":"'${RELEASE_VERSION}'","cab":"'${CAB_TICKET}'","approver":"'${APPROVED_BY}'"}}' \
+                        "${SPLUNK_HEC_URL}"
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+        failure {
+            sh '''
+                curl -X POST "${SLACK_WEBHOOK}" \
+                    -H "Content-Type: application/json" \
+                    -d '{"text":"🔴 PIPELINE FAILED: '${APP_NAME}' '${RELEASE_VERSION}' — Stage: '${env.STAGE_NAME}'"}'
+            '''
+        }
+    }
+}

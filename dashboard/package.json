@@ -1,0 +1,18 @@
+{
+  "name": "riskops-command-center-dashboard",
+  "version": "1.0.0",
+  "description": "Production monitoring dashboard for card risk platform operations",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
+  },
+  "author": "Nitin Madagi",
+  "license": "MIT"
+}

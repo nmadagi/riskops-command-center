@@ -1,0 +1,101 @@
+# ============================================================================
+# Deployment Pipeline Configuration — Risk Scoring Platform
+# ============================================================================
+# Defines pipeline stages, gates, and rollback triggers for
+# production deployments managed via Jenkins + Ansible.
+# ============================================================================
+
+pipeline:
+  name: "Risk Platform Production Deployment"
+  version: "2.0"
+  
+  environments:
+    staging:
+      hosts:
+        falcon_scoring: ["falcon-stg-01", "falcon-stg-02"]
+        feedzai_gateway: ["feedzai-stg-01"]
+        rule_manager: ["rule-mgr-stg-01"]
+      coherence_cluster_size: 4
+      validation_timeout_min: 10
+      
+    production:
+      hosts:
+        falcon_scoring: ["falcon-01", "falcon-02", "falcon-03", "falcon-04"]
+        feedzai_gateway: ["feedzai-gw-01", "feedzai-gw-02"]
+        rule_manager: ["rule-mgr-01", "rule-mgr-02"]
+        case_management: ["case-mgmt-01", "case-mgmt-02"]
+        risk_gateway: ["risk-gw-01", "risk-gw-02"]
+      coherence_cluster_size: 12
+      validation_timeout_min: 30
+      
+  deployment_strategy:
+    type: "rolling"
+    max_unavailable: 1
+    health_gate:
+      enabled: true
+      endpoint: "/actuator/health"
+      expected_status: 200
+      timeout_seconds: 300
+      retry_interval_seconds: 10
+    batch_hold:
+      enabled: true
+      scheduler: "control-m"
+      folder: "RISK_PLATFORM"
+    cache_management:
+      clear_before_deploy: false  # Only clear on major version changes
+      warmup_after_deploy: true
+      warmup_job: "RISK_CACHE_WARMUP"
+
+  gates:
+    pre_deploy:
+      - name: "CAB Approval"
+        type: "manual"
+        required: true
+      - name: "Health Baseline"
+        type: "automated"
+        script: "scripts/health_check.sh"
+      - name: "Config Snapshot"
+        type: "automated"
+        action: "git tag pre-deploy-{timestamp}"
+        
+    post_deploy:
+      - name: "Endpoint Validation"
+        type: "automated"
+        script: "scripts/deploy_validator.sh"
+        timeout_min: 15
+      - name: "SLA Monitoring"
+        type: "automated"
+        duration_min: 30
+        criteria:
+          latency_p99_ms: "< 200"
+          error_rate_pct: "< 0.5"
+          cache_hit_rate: "> 0.95"
+
+  rollback:
+    triggers:
+      - "validation_failure"
+      - "sla_breach_15min"
+      - "manual_override"
+    procedure:
+      - "hold_batch_jobs"
+      - "redeploy_previous_version"
+      - "restore_config_snapshot"
+      - "clear_cache_if_needed"
+      - "validate_rollback"
+      - "release_batch_jobs"
+    notification:
+      slack_channel: "#risk-ops-critical"
+      pagerduty: true
+      email: "risk-platform-team@fiserv.com"
+
+  notifications:
+    channels:
+      - type: "slack"
+        webhook: "${SLACK_WEBHOOK}"
+        events: ["deploy_start", "deploy_complete", "deploy_failed", "rollback"]
+      - type: "splunk"
+        hec_url: "${SPLUNK_HEC_URL}"
+        events: ["deploy_start", "deploy_complete", "deploy_failed", "rollback", "validation"]
+      - type: "pagerduty"
+        routing_key: "${PD_ROUTING_KEY}"
+        events: ["deploy_failed", "rollback", "validation_failure"]

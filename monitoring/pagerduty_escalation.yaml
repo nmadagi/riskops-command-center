@@ -1,0 +1,84 @@
+# ============================================================================
+# PagerDuty Escalation Policy — Risk Platform
+# ============================================================================
+
+escalation_policies:
+  - name: "Risk Platform Production"
+    description: "Escalation policy for card risk platform production incidents"
+    num_loops: 2
+    on_call_handoff_notifications: "if_has_services"
+
+    escalation_rules:
+      # Level 1: On-call engineer (immediate)
+      - escalation_delay_in_minutes: 0
+        targets:
+          - type: "schedule_reference"
+            id: "risk-platform-primary-oncall"
+
+      # Level 2: Backup on-call (5 min if no ack)
+      - escalation_delay_in_minutes: 5
+        targets:
+          - type: "schedule_reference"
+            id: "risk-platform-backup-oncall"
+
+      # Level 3: Platform lead + Release manager (15 min for P1)
+      - escalation_delay_in_minutes: 15
+        targets:
+          - type: "user_reference"
+            id: "platform-lead"
+          - type: "user_reference"
+            id: "release-manager"
+
+      # Level 4: Engineering manager (30 min for P1)
+      - escalation_delay_in_minutes: 30
+        targets:
+          - type: "user_reference"
+            id: "engineering-manager"
+
+services:
+  - name: "Risk Platform — Falcon Scoring"
+    description: "Real-time transaction fraud scoring engine"
+    escalation_policy: "Risk Platform Production"
+    alert_creation: "create_alerts_and_incidents"
+    auto_resolve_timeout: null  # Manual resolution required
+    acknowledgement_timeout: 900  # 15 min to ack
+
+  - name: "Risk Platform — Coherence Cache"
+    description: "Distributed cache cluster for risk data"
+    escalation_policy: "Risk Platform Production"
+    alert_creation: "create_alerts_and_incidents"
+    auto_resolve_timeout: null
+    acknowledgement_timeout: 900
+
+  - name: "Risk Platform — Batch Processing"
+    description: "Control-M scheduled batch jobs"
+    escalation_policy: "Risk Platform Production"
+    alert_creation: "create_alerts_and_incidents"
+    auto_resolve_timeout: 14400  # 4 hr auto-resolve for batch
+    acknowledgement_timeout: 1800
+
+  - name: "Risk Platform — Oracle GoldenGate"
+    description: "Database replication infrastructure"
+    escalation_policy: "Risk Platform Production"
+    alert_creation: "create_alerts_and_incidents"
+    auto_resolve_timeout: null
+    acknowledgement_timeout: 900
+
+schedules:
+  - name: "risk-platform-primary-oncall"
+    time_zone: "America/New_York"
+    description: "Primary on-call rotation for risk platform"
+    schedule_layers:
+      - name: "Weekly Rotation"
+        rotation_virtual_start: "2026-01-01T00:00:00-05:00"
+        rotation_turn_length_seconds: 604800  # 7 days
+        start: "2026-01-01T00:00:00-05:00"
+
+  - name: "risk-platform-backup-oncall"
+    time_zone: "America/New_York"
+    description: "Backup on-call rotation"
+    schedule_layers:
+      - name: "Weekly Rotation (Offset)"
+        rotation_virtual_start: "2026-01-08T00:00:00-05:00"
+        rotation_turn_length_seconds: 604800
+        start: "2026-01-08T00:00:00-05:00"

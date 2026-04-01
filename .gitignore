@@ -1,0 +1,7 @@
+node_modules/
+dashboard/build/
+.env
+*.log
+.DS_Store
+.m2/
+target/
