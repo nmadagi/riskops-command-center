@@ -56,10 +56,10 @@ for node in falcon-{01..04}.prod.internal; do
   
   # Deploy previous artifact
   scp "/opt/releases/risk-platform/${PREV_VERSION}/risk-scoring-engine.war" \
-    "${node}:/opt/fiserv/falcon/deployments/"
+    "${node}:/opt/riskplat/falcon/deployments/"
   
   # Restore configuration
-  ssh $node "cd /opt/fiserv/falcon/config && \
+  ssh $node "cd /opt/riskplat/falcon/config && \
     git checkout pre-deploy-\$(date +%Y%m%d) -- ."
   
   # Start application

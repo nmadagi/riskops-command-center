@@ -24,11 +24,11 @@ DRY_RUN=false
 
 # Directories to manage
 declare -A LOG_DIRS=(
-    [falcon-scoring]="/opt/fiserv/falcon/logs"
-    [feedzai-gateway]="/opt/fiserv/feedzai/logs"
-    [rule-manager]="/opt/fiserv/rule-manager/logs"
-    [case-management]="/opt/fiserv/case-mgmt/logs"
-    [risk-gateway]="/opt/fiserv/risk-gateway/logs"
+    [falcon-scoring]="/opt/riskplat/falcon/logs"
+    [feedzai-gateway]="/opt/riskplat/feedzai/logs"
+    [rule-manager]="/opt/riskplat/rule-manager/logs"
+    [case-management]="/opt/riskplat/case-mgmt/logs"
+    [risk-gateway]="/opt/riskplat/risk-gateway/logs"
     [coherence-cache]="/opt/oracle/coherence/logs"
     [websphere]="/opt/IBM/WebSphere/AppServer/profiles/RiskProfile/logs"
     [controlm-agent]="/opt/controlm/agent/log"

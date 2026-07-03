@@ -116,8 +116,8 @@ T+4 hr     P1 unresolved: VP notification, DR consideration
 
 ```bash
 # Where are logs?
-/opt/fiserv/falcon/logs/                  # Falcon scoring
-/opt/fiserv/feedzai/logs/                 # Feedzai gateway
+/opt/riskplat/falcon/logs/                  # Falcon scoring
+/opt/riskplat/feedzai/logs/                 # Feedzai gateway
 /opt/oracle/coherence/logs/               # Coherence cache
 /opt/IBM/WebSphere/AppServer/profiles/*/logs/  # WebSphere
 

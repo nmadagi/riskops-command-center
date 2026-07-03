@@ -126,13 +126,13 @@ done
 ```bash
 # 9. Update DNS to point to DR site
 # Via DNS management API or manual update
-# risk-scoring.fiserv.com → DR site F5 VIP
+# risk-scoring.example.com → DR site F5 VIP
 
 # 10. Update F5 load balancer pools
 # Activate DR pool members, deactivate primary pool
 
 # 11. Verify traffic flowing to DR site
-curl -sk "https://risk-scoring.fiserv.com/actuator/health" | \
+curl -sk "https://risk-scoring.example.com/actuator/health" | \
   jq '.details.hostname'
 # Should show DR hostnames
 

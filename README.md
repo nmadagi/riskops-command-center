@@ -124,9 +124,9 @@ chmod +x scripts/*.sh
 
 ---
 
-## Skills Matrix — JD Alignment
+## Skills Matrix
 
-| JD Requirement | Demonstrated Here |
+| Skill Area | Demonstrated Here |
 |---------------|-------------------|
 | 10+ years UNIX/Linux production support | `scripts/` — 5 production-grade shell scripts |
 | Java-based platform support | `dashboard/`, `monitoring/` — JVM metrics, WebSphere deployment |

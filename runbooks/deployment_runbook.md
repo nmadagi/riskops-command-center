@@ -60,7 +60,7 @@ done
 # 5. Deploy WAR file to each node
 for node in falcon-{01..04}.prod.internal; do
   scp /opt/releases/risk-platform/v3.15.0/risk-scoring-engine.war \
-    $node:/opt/fiserv/falcon/deployments/
+    $node:/opt/riskplat/falcon/deployments/
 done
 
 # 6. Clear Coherence cache (coordinated shutdown)
@@ -131,7 +131,7 @@ curl -sk -X POST -H "Authorization: Bearer $CTM_TOKEN" \
 for node in falcon-{01..04}.prod.internal; do
   ssh $node "systemctl stop websphere-risk"
   scp /opt/releases/risk-platform/v3.14.2/risk-scoring-engine.war \
-    $node:/opt/fiserv/falcon/deployments/
+    $node:/opt/riskplat/falcon/deployments/
   ssh $node "systemctl start websphere-risk"
   # Health gate (same as deploy)
 done

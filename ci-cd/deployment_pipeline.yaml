@@ -86,7 +86,7 @@ pipeline:
     notification:
       slack_channel: "#risk-ops-critical"
       pagerduty: true
-      email: "risk-platform-team@fiserv.com"
+      email: "risk-platform-team@example.com"
 
   notifications:
     channels:

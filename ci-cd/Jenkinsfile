@@ -181,7 +181,7 @@ pipeline {
 
                     echo "Snapshotting current config..."
                     ssh deploy-host.prod.internal \
-                        "cd /opt/fiserv/falcon/config && git tag pre-deploy-$(date +%Y%m%d-%H%M)"
+                        "cd /opt/riskplat/falcon/config && git tag pre-deploy-$(date +%Y%m%d-%H%M)"
                 '''
             }
         }

@@ -44,7 +44,7 @@ const SHELL_SCRIPTS = {
 # Maps to JD: "Detect, troubleshoot, and resolve production issues"
 
 LOG_DIR="/var/log/risk-apps"
-SPLUNK_HEC="https://splunk.fiserv.internal:8088/services/collector"
+SPLUNK_HEC="https://splunk.prod.internal:8088/services/collector"
 ALERT_THRESHOLD_MS=200
 SERVICES=("falcon-scoring:8443" "feedzai-gateway:9090" "rule-manager:8080" "case-mgmt:8081")
 
@@ -241,7 +241,7 @@ const IncidentTimeline = ({ incident }) => (
   </div>
 );
 
-// ─── JD SKILL MAPPING COMPONENT ─────────────────────────────────────────────
+// ─── SKILL MAPPING COMPONENT ─────────────────────────────────────────────
 const SkillMatrix = () => {
   const mapping = [
     { jd: "UNIX/Linux production support", demo: "Shell scripts for health checks, cache monitoring, batch job tracking", tab: "scripts" },
@@ -266,7 +266,7 @@ const SkillMatrix = () => {
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
         <thead>
           <tr style={{ borderBottom: "2px solid #333" }}>
-            <th style={{ textAlign: "left", padding: "10px 12px", color: "#8e8e93", fontWeight: 600, fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>JD Requirement</th>
+            <th style={{ textAlign: "left", padding: "10px 12px", color: "#8e8e93", fontWeight: 600, fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Skill Area</th>
             <th style={{ textAlign: "left", padding: "10px 12px", color: "#8e8e93", fontWeight: 600, fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Demonstrated In Project</th>
             <th style={{ textAlign: "left", padding: "10px 12px", color: "#8e8e93", fontWeight: 600, fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Tab</th>
           </tr>
@@ -314,7 +314,7 @@ export default function RiskOpsCommandCenter() {
     { id: "scripts", label: "Automation Scripts" },
     { id: "monitoring", label: "Monitoring & Alerts" },
     { id: "dr", label: "Disaster Recovery" },
-    { id: "skillmap", label: "JD Skill Map" },
+    { id: "skillmap", label: "Skill Map" },
   ];
 
   return (
@@ -572,7 +572,7 @@ export default function RiskOpsCommandCenter() {
             </div>
             <Terminal lines={SHELL_SCRIPTS[scriptView].split("\n")} title={`${scriptView}.sh — production automation`} />
             <div style={{ background: "rgba(10,132,255,0.06)", border: "1px solid rgba(10,132,255,0.15)", borderRadius: "8px", padding: "14px", fontSize: "13px", color: "#a1a1a6" }}>
-              <span style={{ color: "#0a84ff", fontWeight: 600 }}>JD Mapping:</span> These scripts demonstrate UNIX/Linux shell scripting, Splunk HEC integration, Coherence cache management, Control-M batch monitoring, and PagerDuty alerting — directly addressing the "10+ years UNIX/Linux" and "automation and monitoring" requirements.
+              <span style={{ color: "#0a84ff", fontWeight: 600 }}>Skills:</span> These scripts demonstrate UNIX/Linux shell scripting, Splunk HEC integration, Coherence cache management, Control-M batch monitoring, and PagerDuty alerting — directly addressing the "10+ years UNIX/Linux" and "automation and monitoring" requirements.
             </div>
           </div>
         )}
@@ -657,7 +657,7 @@ export default function RiskOpsCommandCenter() {
             </div>
 
             <div style={{ background: "rgba(10,132,255,0.06)", border: "1px solid rgba(10,132,255,0.15)", borderRadius: "8px", padding: "14px", fontSize: "13px", color: "#a1a1a6" }}>
-              <span style={{ color: "#0a84ff", fontWeight: 600 }}>JD Mapping:</span> DR planning with RTO/RPO targets, Oracle GoldenGate recovery, Coherence cache rebuild procedures, and batch job dependency management — directly addressing the "Risk Disaster Recovery Plan" and "capacity planning" requirements.
+              <span style={{ color: "#0a84ff", fontWeight: 600 }}>Skills:</span> DR planning with RTO/RPO targets, Oracle GoldenGate recovery, Coherence cache rebuild procedures, and batch job dependency management — directly addressing the "Risk Disaster Recovery Plan" and "capacity planning" requirements.
             </div>
           </div>
         )}
@@ -666,8 +666,8 @@ export default function RiskOpsCommandCenter() {
         {activeTab === "skillmap" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "20px" }}>
-              <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "4px" }}>JD → Project Skills Matrix</h3>
-              <p style={{ fontSize: "12px", color: "#8e8e93", marginBottom: "16px" }}>Every requirement from the Fiserv Risk Application Support Advisor JD is demonstrated in this project.</p>
+              <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "4px" }}>Skills Matrix</h3>
+              <p style={{ fontSize: "12px", color: "#8e8e93", marginBottom: "16px" }}>Core production-support and risk-platform skills demonstrated in this project.</p>
               <SkillMatrix />
             </div>
 
@@ -675,7 +675,7 @@ export default function RiskOpsCommandCenter() {
               <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#34c759", marginBottom: "10px" }}>GitHub Repository Structure</h3>
               <Terminal title="project structure" lines={[
                 "riskops-command-center/",
-                "├── README.md                    # Project overview + JD skill mapping",
+                "├── README.md                    # Project overview + skill mapping",
                 "├── dashboard/                   # React monitoring dashboard",
                 "│   ├── src/App.jsx             # Main dashboard (this file)",
                 "│   └── package.json",
