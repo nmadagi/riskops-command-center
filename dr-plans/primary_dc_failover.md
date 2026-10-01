@@ -1,4 +1,4 @@
-# Disaster Recovery Plan — Primary Data Center Failover
+# Disaster Recovery Plan - Primary Data Center Failover
 
 > **RTO:** 4 hours | **RPO:** < 5 minutes  
 > **Last DR Test:** 2026-02-15 (passed)  

@@ -1,5 +1,5 @@
 # ============================================================================
-# Deployment Pipeline Configuration — Risk Scoring Platform
+# Deployment Pipeline Configuration - Risk Scoring Platform
 # ============================================================================
 # Defines pipeline stages, gates, and rollback triggers for
 # production deployments managed via Jenkins + Ansible.

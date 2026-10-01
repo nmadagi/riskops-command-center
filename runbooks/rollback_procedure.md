@@ -1,4 +1,4 @@
-# Rollback Procedure — Risk Scoring Platform
+# Rollback Procedure - Risk Scoring Platform
 
 > **When to use:** Deployment validation failure, post-deploy SLA breach, or critical defect  
 > **Authorization:** On-call engineer (P1) or Release Manager (P2+)  
@@ -26,7 +26,7 @@ Initiate rollback when ANY of the following occur within 1 hour of deployment:
 
 ```bash
 # Post to Slack #risk-ops-critical
-"ROLLBACK INITIATED for release vX.Y.Z — [reason]. Bridge call: [dial-in]"
+"ROLLBACK INITIATED for release vX.Y.Z - [reason]. Bridge call: [dial-in]"
 
 # Acknowledge in PagerDuty if incident triggered
 ```
@@ -111,7 +111,7 @@ curl -sk "https://risk-gw.prod.internal:9443/gateway/admin/resume"
 
 ### Step 7: Post-Rollback
 
-- [ ] Monitor for 1 hour — confirm stability
+- [ ] Monitor for 1 hour - confirm stability
 - [ ] Update incident ticket with rollback details
 - [ ] Close Change Request as "rolled back"
 - [ ] Schedule post-mortem within 48 hours

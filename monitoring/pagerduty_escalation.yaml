@@ -1,5 +1,5 @@
 # ============================================================================
-# PagerDuty Escalation Policy — Risk Platform
+# PagerDuty Escalation Policy - Risk Platform
 # ============================================================================
 
 escalation_policies:
@@ -36,28 +36,28 @@ escalation_policies:
             id: "engineering-manager"
 
 services:
-  - name: "Risk Platform — Falcon Scoring"
+  - name: "Risk Platform - Falcon Scoring"
     description: "Real-time transaction fraud scoring engine"
     escalation_policy: "Risk Platform Production"
     alert_creation: "create_alerts_and_incidents"
     auto_resolve_timeout: null  # Manual resolution required
     acknowledgement_timeout: 900  # 15 min to ack
 
-  - name: "Risk Platform — Coherence Cache"
+  - name: "Risk Platform - Coherence Cache"
     description: "Distributed cache cluster for risk data"
     escalation_policy: "Risk Platform Production"
     alert_creation: "create_alerts_and_incidents"
     auto_resolve_timeout: null
     acknowledgement_timeout: 900
 
-  - name: "Risk Platform — Batch Processing"
+  - name: "Risk Platform - Batch Processing"
     description: "Control-M scheduled batch jobs"
     escalation_policy: "Risk Platform Production"
     alert_creation: "create_alerts_and_incidents"
     auto_resolve_timeout: 14400  # 4 hr auto-resolve for batch
     acknowledgement_timeout: 1800
 
-  - name: "Risk Platform — Oracle GoldenGate"
+  - name: "Risk Platform - Oracle GoldenGate"
     description: "Database replication infrastructure"
     escalation_policy: "Risk Platform Production"
     alert_creation: "create_alerts_and_incidents"

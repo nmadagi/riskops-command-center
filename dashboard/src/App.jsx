@@ -13,11 +13,11 @@ const SERVICES = [
 ];
 
 const ALERT_TEMPLATES = [
-  { severity: "critical", msg: "Coherence cache node OOR — partition transfer stalled", service: "coherence-cache", sla: "15min" },
+  { severity: "critical", msg: "Coherence cache node OOR - partition transfer stalled", service: "coherence-cache", sla: "15min" },
   { severity: "critical", msg: "Falcon scoring latency > 500ms (SLA: 200ms)", service: "falcon-scoring", sla: "15min" },
   { severity: "high", msg: "GoldenGate replication lag exceeds 30s threshold", service: "oracle-golden", sla: "30min" },
   { severity: "high", msg: "JVM heap utilization at 92% on rule-manager-node-03", service: "rule-manager", sla: "30min" },
-  { severity: "medium", msg: "Control-M batch job RISK_EOD_RECON failed — exit code 1", service: "batch-processor", sla: "60min" },
+  { severity: "medium", msg: "Control-M batch job RISK_EOD_RECON failed - exit code 1", service: "batch-processor", sla: "60min" },
   { severity: "medium", msg: "Couchbase bucket 'txn_cache' approaching quota (87%)", service: "couchbase-store", sla: "60min" },
   { severity: "low", msg: "Dynatrace agent disconnected on feedzai-gw-node-02", service: "feedzai-gateway", sla: "4hr" },
   { severity: "low", msg: "SSL certificate renewal due in 14 days for risk-gateway", service: "feedzai-gateway", sla: "7d" },
@@ -40,7 +40,7 @@ const DR_SCENARIOS = [
 
 const SHELL_SCRIPTS = {
   healthCheck: `#!/bin/bash
-# health_check.sh — Production Health Check Script
+# health_check.sh - Production Health Check Script
 # Maps to JD: "Detect, troubleshoot, and resolve production issues"
 
 LOG_DIR="/var/log/risk-apps"
@@ -57,11 +57,11 @@ check_service() {
   local latency_ms=$(( (end_ms - start_ms) / 1000000 ))
 
   if [[ "\$http_code" != "200" ]] || [[ \$latency_ms -gt \$ALERT_THRESHOLD_MS ]]; then
-    echo "ALERT: \$svc — HTTP \$http_code, latency \${latency_ms}ms"
+    echo "ALERT: \$svc - HTTP \$http_code, latency \${latency_ms}ms"
     send_splunk_alert "\$svc" "\$http_code" "\$latency_ms"
     return 1
   fi
-  echo "OK: \$svc — HTTP \$http_code, \${latency_ms}ms"
+  echo "OK: \$svc - HTTP \$http_code, \${latency_ms}ms"
 }
 
 send_splunk_alert() {
@@ -76,7 +76,7 @@ for entry in "\${SERVICES[@]}"; do
 done`,
 
   cacheMonitor: `#!/bin/bash
-# coherence_monitor.sh — Coherence Cache Health Monitor
+# coherence_monitor.sh - Coherence Cache Health Monitor
 # Maps to JD: "Coherence cache management"
 
 COHERENCE_MGMT="http://coherence-mgmt.prod:30000/management/coherence/cluster"
@@ -110,7 +110,7 @@ alert() { logger -p local0."\$1" "COHERENCE_MONITOR: \$2"; }
 check_cluster_health`,
 
   batchMonitor: `#!/bin/bash
-# batch_monitor.sh — Control-M Batch Job Monitor
+# batch_monitor.sh - Control-M Batch Job Monitor
 # Maps to JD: "batch job monitoring"
 
 CONTROLM_API="https://controlm.prod.internal:8443/automation-api"
@@ -233,7 +233,7 @@ const IncidentTimeline = ({ incident }) => (
           }}>{active ? (current ? "●" : "✓") : i + 1}</div>
           <div>
             <div style={{ fontSize: "14px", fontWeight: current ? 700 : 400, color: active ? "#f5f5f7" : "#555" }}>{phase}</div>
-            {current && <div style={{ fontSize: "11px", color: "#0a84ff", marginTop: "2px" }}>In Progress — {incident.elapsed}m elapsed</div>}
+            {current && <div style={{ fontSize: "11px", color: "#0a84ff", marginTop: "2px" }}>In Progress - {incident.elapsed}m elapsed</div>}
           </div>
         </div>
       );
@@ -294,7 +294,7 @@ export default function RiskOpsCommandCenter() {
   const [alerts, setAlerts] = useState(() =>
     ALERT_TEMPLATES.slice(0, 4).map((a, i) => ({ ...a, id: i, time: ts(), ack: false }))
   );
-  const [incident] = useState({ id: "INC-20260331-001", title: "Falcon scoring latency spike — SLA breach risk", currentPhase: 2, elapsed: 14, severity: "critical" });
+  const [incident] = useState({ id: "INC-20260331-001", title: "Falcon scoring latency spike - SLA breach risk", currentPhase: 2, elapsed: 14, severity: "critical" });
   const [deployPhase, setDeployPhase] = useState(0);
   const [drScenario, setDrScenario] = useState(0);
   const [scriptView, setScriptView] = useState("healthCheck");
@@ -342,7 +342,7 @@ export default function RiskOpsCommandCenter() {
           <div style={{ width: 36, height: 36, borderRadius: "8px", background: "linear-gradient(135deg, #0a84ff, #5e5ce6)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: "16px" }}>R</div>
           <div>
             <div style={{ fontSize: "16px", fontWeight: 700, letterSpacing: "-0.3px" }}>RiskOps Command Center</div>
-            <div style={{ fontSize: "11px", color: "#8e8e93" }}>Card Risk Platform — Production Support Dashboard</div>
+            <div style={{ fontSize: "11px", color: "#8e8e93" }}>Card Risk Platform - Production Support Dashboard</div>
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
@@ -474,7 +474,7 @@ export default function RiskOpsCommandCenter() {
               <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "20px" }}>
                 <h3 style={{ fontSize: "14px", fontWeight: 600, marginBottom: "14px" }}>Root Cause Analysis Template</h3>
                 <div style={{ fontSize: "13px", color: "#a1a1a6", lineHeight: "1.8" }}>
-                  <div style={{ fontWeight: 600, color: "#f5f5f7", marginBottom: "6px" }}>RCA-2026-0331 — Falcon Latency Spike</div>
+                  <div style={{ fontWeight: 600, color: "#f5f5f7", marginBottom: "6px" }}>RCA-2026-0331 - Falcon Latency Spike</div>
                   <div><span style={{ color: "#0a84ff" }}>Impact:</span> P99 latency exceeded 500ms for 8 minutes, affecting ~12,000 transactions</div>
                   <div><span style={{ color: "#0a84ff" }}>Root Cause:</span> Coherence cache partition transfer during rolling restart caused temporary data locality miss</div>
                   <div><span style={{ color: "#0a84ff" }}>Detection:</span> Splunk alert fired at T+45s, PagerDuty escalation at T+60s</div>
@@ -570,9 +570,9 @@ export default function RiskOpsCommandCenter() {
                 </button>
               ))}
             </div>
-            <Terminal lines={SHELL_SCRIPTS[scriptView].split("\n")} title={`${scriptView}.sh — production automation`} />
+            <Terminal lines={SHELL_SCRIPTS[scriptView].split("\n")} title={`${scriptView}.sh - production automation`} />
             <div style={{ background: "rgba(10,132,255,0.06)", border: "1px solid rgba(10,132,255,0.15)", borderRadius: "8px", padding: "14px", fontSize: "13px", color: "#a1a1a6" }}>
-              <span style={{ color: "#0a84ff", fontWeight: 600 }}>Skills:</span> These scripts demonstrate UNIX/Linux shell scripting, Splunk HEC integration, Coherence cache management, Control-M batch monitoring, and PagerDuty alerting — directly addressing the "10+ years UNIX/Linux" and "automation and monitoring" requirements.
+              <span style={{ color: "#0a84ff", fontWeight: 600 }}>Skills:</span> These scripts demonstrate UNIX/Linux shell scripting, Splunk HEC integration, Coherence cache management, Control-M batch monitoring, and PagerDuty alerting - directly addressing the "10+ years UNIX/Linux" and "automation and monitoring" requirements.
             </div>
           </div>
         )}
@@ -581,7 +581,7 @@ export default function RiskOpsCommandCenter() {
         {activeTab === "monitoring" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", padding: "20px" }}>
-              <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "16px" }}>Splunk SPL Queries — Risk Platform Monitoring</h3>
+              <h3 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "16px" }}>Splunk SPL Queries - Risk Platform Monitoring</h3>
               {SPLUNK_QUERIES.map((q, i) => (
                 <div key={i} style={{ marginBottom: "14px" }}>
                   <div style={{ fontSize: "13px", fontWeight: 600, color: "#f5f5f7", marginBottom: "6px" }}>{q.name}</div>
@@ -657,7 +657,7 @@ export default function RiskOpsCommandCenter() {
             </div>
 
             <div style={{ background: "rgba(10,132,255,0.06)", border: "1px solid rgba(10,132,255,0.15)", borderRadius: "8px", padding: "14px", fontSize: "13px", color: "#a1a1a6" }}>
-              <span style={{ color: "#0a84ff", fontWeight: 600 }}>Skills:</span> DR planning with RTO/RPO targets, Oracle GoldenGate recovery, Coherence cache rebuild procedures, and batch job dependency management — directly addressing the "Risk Disaster Recovery Plan" and "capacity planning" requirements.
+              <span style={{ color: "#0a84ff", fontWeight: 600 }}>Skills:</span> DR planning with RTO/RPO targets, Oracle GoldenGate recovery, Coherence cache rebuild procedures, and batch job dependency management - directly addressing the "Risk Disaster Recovery Plan" and "capacity planning" requirements.
             </div>
           </div>
         )}

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# health_check.sh — Production Service Health Check
+# health_check.sh - Production Service Health Check
 # ============================================================================
 # Purpose:  Monitors all risk platform services, checks HTTP health endpoints,
 #           measures response latency, and sends alerts to Splunk HEC and
@@ -167,22 +167,22 @@ check_service() {
     # Evaluate result
     if [[ "$http_code" -eq 0 ]]; then
         result="UNREACHABLE"
-        log "CRITICAL" "$name — Connection failed (timeout after ${CONNECT_TIMEOUT}s)"
+        log "CRITICAL" "$name - Connection failed (timeout after ${CONNECT_TIMEOUT}s)"
         trigger_pagerduty "$name" "Health check UNREACHABLE: $name at $url" "critical"
     elif [[ "$http_code" -ne "$expected_status" ]]; then
         result="UNHEALTHY"
-        log "CRITICAL" "$name — HTTP $http_code (expected $expected_status), ${latency_ms}ms"
+        log "CRITICAL" "$name - HTTP $http_code (expected $expected_status), ${latency_ms}ms"
         trigger_pagerduty "$name" "Health check UNHEALTHY: $name returned HTTP $http_code" "critical"
     elif [[ "$latency_ms" -gt "$LATENCY_CRIT_MS" ]]; then
         result="DEGRADED_CRITICAL"
-        log "HIGH" "$name — HTTP $http_code but latency ${latency_ms}ms > ${LATENCY_CRIT_MS}ms threshold"
+        log "HIGH" "$name - HTTP $http_code but latency ${latency_ms}ms > ${LATENCY_CRIT_MS}ms threshold"
         trigger_pagerduty "$name" "Latency CRITICAL: $name at ${latency_ms}ms (SLA: ${sla_ms}ms)" "high"
     elif [[ "$latency_ms" -gt "$LATENCY_WARN_MS" ]]; then
         result="DEGRADED_WARN"
-        log "WARN" "$name — HTTP $http_code, latency ${latency_ms}ms > ${LATENCY_WARN_MS}ms warning"
+        log "WARN" "$name - HTTP $http_code, latency ${latency_ms}ms > ${LATENCY_WARN_MS}ms warning"
     else
         result="HEALTHY"
-        log_verbose "$name — HTTP $http_code, ${latency_ms}ms — HEALTHY"
+        log_verbose "$name - HTTP $http_code, ${latency_ms}ms - HEALTHY"
     fi
 
     # Always send metrics to Splunk (healthy or not)
@@ -203,7 +203,7 @@ main() {
     mkdir -p "$LOG_DIR"
 
     echo "═══════════════════════════════════════════════════════════════"
-    echo "  RiskOps Health Check — $(timestamp)"
+    echo "  RiskOps Health Check - $(timestamp)"
     echo "  Host: $(hostname) | Mode: $([[ "$DRY_RUN" == true ]] && echo "DRY-RUN" || echo "LIVE")"
     echo "═══════════════════════════════════════════════════════════════"
     echo ""

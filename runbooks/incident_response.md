@@ -1,4 +1,4 @@
-# Incident Response Guide — Risk Platform On-Call
+# Incident Response Guide - Risk Platform On-Call
 
 > **Audience:** On-call engineers, production support team  
 > **Process:** ITIL Incident Management aligned  
@@ -10,10 +10,10 @@
 
 | Severity | Criteria | Response SLA | Examples |
 |----------|----------|-------------|----------|
-| **P1 — Critical** | Service outage or SLA breach affecting transaction processing | 15 min response, 1 hr resolution target | Falcon scoring down, Coherence cluster split-brain, GoldenGate replication break |
-| **P2 — High** | Degraded performance or partial service impact | 30 min response, 4 hr resolution target | P99 latency > 500ms, batch job P1 failure, cache hit ratio < 90% |
-| **P3 — Medium** | Non-critical component degraded, no client impact | 2 hr response, next business day | Monitoring agent disconnect, non-critical batch failure, disk space warning |
-| **P4 — Low** | Informational, maintenance tasks | Next business day | Certificate renewal, documentation updates |
+| **P1 - Critical** | Service outage or SLA breach affecting transaction processing | 15 min response, 1 hr resolution target | Falcon scoring down, Coherence cluster split-brain, GoldenGate replication break |
+| **P2 - High** | Degraded performance or partial service impact | 30 min response, 4 hr resolution target | P99 latency > 500ms, batch job P1 failure, cache hit ratio < 90% |
+| **P3 - Medium** | Non-critical component degraded, no client impact | 2 hr response, next business day | Monitoring agent disconnect, non-critical batch failure, disk space warning |
+| **P4 - Low** | Informational, maintenance tasks | Next business day | Certificate renewal, documentation updates |
 
 ---
 
@@ -39,7 +39,7 @@
 
 ### 3. Investigation
 
-**First 5 minutes — Quick Diagnostics:**
+**First 5 minutes - Quick Diagnostics:**
 ```bash
 # Service health overview
 ./scripts/health_check.sh --verbose
@@ -81,7 +81,7 @@ Common mitigation actions:
 ### 5. Resolution
 
 ```
-1. Confirm service restored — all health checks passing
+1. Confirm service restored - all health checks passing
 2. Verify SLA metrics returning to baseline
 3. Monitor for 30 minutes post-resolution
 4. Stand down bridge call

@@ -1,7 +1,7 @@
 # Coherence & Couchbase Cache Recovery Runbook
 
 > **Scope:** Oracle Coherence distributed cache and Couchbase NoSQL store  
-> **Criticality:** P1 — Cache failures directly impact transaction scoring latency
+> **Criticality:** P1 - Cache failures directly impact transaction scoring latency
 
 ---
 
@@ -18,10 +18,10 @@ curl -s "http://coherence-mgmt:30000/management/coherence/cluster/members" | \
 curl -s "http://coherence-mgmt:30000/management/coherence/cluster/services/RiskScoringCache/partition" | \
   jq '{orphaned: .orphanedPartitions, endangered: .endangeredPartitions, transferring: .partitionsTransferring}'
 
-# 3. If node is recoverable — restart
+# 3. If node is recoverable - restart
 ssh <departed-node> "systemctl restart coherence-member"
 
-# 4. If node is not recoverable — remove from cluster and scale
+# 4. If node is not recoverable - remove from cluster and scale
 # Update coherence-override.xml to remove node from well-known-addresses
 # Coherence will automatically redistribute partitions
 
@@ -50,7 +50,7 @@ done
 # 4. Wait for partition redistribution (monitor orphaned count)
 watch -n 5 'curl -s "http://coherence-mgmt:30000/management/coherence/cluster/services/RiskScoringCache/partition" | jq .orphanedPartitions'
 
-# 5. Restart killed members — they will rejoin the surviving cluster
+# 5. Restart killed members - they will rejoin the surviving cluster
 for node in <minority-partition-nodes>; do
   ssh $node "systemctl start coherence-member"
   sleep 30  # Allow time for partition transfer
@@ -103,7 +103,7 @@ curl -s -u "$CB_USER:$CB_PASS" "http://couchbase-01:8091/pools/default" | \
 curl -s -u "$CB_USER:$CB_PASS" "http://couchbase-01:8091/pools/default/buckets/txn_cache" | \
   jq '{name, quota: .quota, basicStats}'
 
-# 3. If node failed — initiate failover
+# 3. If node failed - initiate failover
 curl -s -X POST -u "$CB_USER:$CB_PASS" \
   "http://couchbase-01:8091/controller/failOver" \
   -d "otpNode=ns_1@couchbase-03.prod.internal"

@@ -1,6 +1,6 @@
 # RiskOps Command Center
 
-> Production support simulation platform for card-risk application platforms — monitoring, incident management, deployment automation, and disaster recovery.
+> Production support simulation platform for card-risk application platforms - monitoring, incident management, deployment automation, and disaster recovery.
 
 Built to demonstrate end-to-end operational expertise for **enterprise financial services risk platforms** (Falcon, Feedzai, Rule Manager, Case Management, Risk Gateway) running on UNIX/Linux clusters with Java-based middleware.
 
@@ -47,11 +47,11 @@ Built to demonstrate end-to-end operational expertise for **enterprise financial
 - **Change Management:** ITIL-aligned CAB process, runbook-driven deployments
 
 ### Risk Platforms (Domain Knowledge)
-- Falcon (FICO) — real-time transaction scoring
-- Feedzai — machine learning fraud detection
-- Rule Manager — business rule engine for fraud policies
-- Case Management — fraud investigation workflow
-- Risk Gateway — transaction routing and decisioning
+- Falcon (FICO) - real-time transaction scoring
+- Feedzai - machine learning fraud detection
+- Rule Manager - business rule engine for fraud policies
+- Case Management - fraud investigation workflow
+- Risk Gateway - transaction routing and decisioning
 
 ---
 
@@ -128,21 +128,21 @@ chmod +x scripts/*.sh
 
 | Skill Area | Demonstrated Here |
 |---------------|-------------------|
-| 10+ years UNIX/Linux production support | `scripts/` — 5 production-grade shell scripts |
-| Java-based platform support | `dashboard/`, `monitoring/` — JVM metrics, WebSphere deployment |
+| 10+ years UNIX/Linux production support | `scripts/` - 5 production-grade shell scripts |
+| Java-based platform support | `dashboard/`, `monitoring/` - JVM metrics, WebSphere deployment |
 | Coherence cache management | `scripts/coherence_monitor.sh`, `dr-plans/cache_cluster_corruption.md` |
-| Batch job monitoring | `scripts/batch_monitor.sh` — Control-M integration |
+| Batch job monitoring | `scripts/batch_monitor.sh` - Control-M integration |
 | SLA tracking & incident resolution | `runbooks/incident_response.md`, dashboard SLA metrics |
 | Deploy/validate/rollback releases | `runbooks/deployment_runbook.md`, `ci-cd/Jenkinsfile` |
-| Post-mortems/RCA | `rca-templates/` — structured templates with examples |
-| Splunk/Dynatrace/ExtraHop | `monitoring/` — SPL queries, Dynatrace alerts, ExtraHop configs |
-| Automation & scripting | `scripts/` — Splunk HEC, PagerDuty, cron-ready automation |
-| Disaster Recovery planning | `dr-plans/` — 3 scenarios with RTO/RPO targets |
+| Post-mortems/RCA | `rca-templates/` - structured templates with examples |
+| Splunk/Dynatrace/ExtraHop | `monitoring/` - SPL queries, Dynatrace alerts, ExtraHop configs |
+| Automation & scripting | `scripts/` - Splunk HEC, PagerDuty, cron-ready automation |
+| Disaster Recovery planning | `dr-plans/` - 3 scenarios with RTO/RPO targets |
 | Oracle GoldenGate | `dr-plans/replication_break_ogg.md`, monitoring queries |
 | NoSQL (Couchbase/Coherence) | Cache monitoring scripts, recovery runbooks |
 | CI/CD & config management | `ci-cd/Jenkinsfile`, Git-based config snapshots |
-| ITIL production support | `runbooks/incident_response.md` — ITIL incident lifecycle |
-| Capacity planning | `docs/capacity_planning.md` — scaling models and baselines |
+| ITIL production support | `runbooks/incident_response.md` - ITIL incident lifecycle |
+| Capacity planning | `docs/capacity_planning.md` - scaling models and baselines |
 
 ---
 
@@ -156,4 +156,4 @@ MS Financial Mathematics | Quantitative Risk & Technology
 
 ## License
 
-MIT License — see [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](LICENSE) for details.

@@ -1,4 +1,4 @@
-# Disaster Recovery — Cache Cluster Corruption
+# Disaster Recovery - Cache Cluster Corruption
 
 > **RTO:** 30 minutes | **RPO:** 0 (stateless cache, Oracle is source-of-truth)  
 > **Scenario:** Coherence or Couchbase data corruption affecting transaction scoring accuracy
@@ -20,7 +20,7 @@
 curl -s "http://coherence-mgmt:30000/management/coherence/cluster/services/RiskScoringCache/caches" | \
   jq '.items[] | {name, size}' > /tmp/cache_sizes.json
 
-# Compare cache sizes across nodes — outliers indicate corruption
+# Compare cache sizes across nodes - outliers indicate corruption
 # Enable circuit breaker on scoring services to prevent reads from bad cache
 for svc in falcon-scoring feedzai-gateway; do
   curl -sk -X POST "https://${svc}.prod.internal/admin/circuit-breaker/open?cache=true"

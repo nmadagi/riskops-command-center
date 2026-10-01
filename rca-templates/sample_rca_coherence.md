@@ -1,8 +1,8 @@
-# Root Cause Analysis — Coherence Cache Partition Incident
+# Root Cause Analysis - Coherence Cache Partition Incident
 
 > **Incident ID:** INC-2026-0328-001  
 > **Date:** 2026-03-28  
-> **Severity:** P1 — Critical  
+> **Severity:** P1 - Critical  
 > **Author:** Nitin Madagi  
 > **Review Date:** 2026-03-30
 
@@ -25,14 +25,14 @@ On March 28, 2026, the Falcon transaction scoring service experienced a latency 
 | 14:35 | PagerDuty on-call engineer paged | PagerDuty |
 | 14:36 | On-call acknowledged, joined bridge call | PagerDuty |
 | 14:38 | Identified Coherence partition transfer in progress during restart | Coherence mgmt API |
-| 14:39 | P99 latency peaked at 520ms — SLA breach (> 200ms) | Dynatrace |
+| 14:39 | P99 latency peaked at 520ms - SLA breach (> 200ms) | Dynatrace |
 | 14:40 | Decision: wait for partition transfer to complete vs force rebalance | Bridge call |
 | 14:41 | Forced partition rebalance on healthy nodes | Manual intervention |
 | 14:42 | Partition transfer completed, latency began decreasing | Coherence metrics |
 | 14:43 | P99 latency returned to 95ms | Dynatrace |
 | 14:45 | All scoring nodes confirmed healthy, cache hit ratio recovering | health_check.sh |
 | 14:50 | Cache hit ratio back to 98.2% (normal: 99.1%) | Splunk |
-| 15:05 | Monitoring confirmed stable — incident resolved | Dynatrace |
+| 15:05 | Monitoring confirmed stable - incident resolved | Dynatrace |
 
 **Total duration:** 33 minutes  
 **Time to detect (TTD):** 2 minutes (automated Splunk alert)  
@@ -43,12 +43,12 @@ On March 28, 2026, the Falcon transaction scoring service experienced a latency 
 
 ## Impact Assessment
 
-- **Services affected:** Falcon Scoring Engine (primary), Feedzai Gateway (secondary — increased response times)
+- **Services affected:** Falcon Scoring Engine (primary), Feedzai Gateway (secondary - increased response times)
 - **Duration of impact:** 8 minutes of SLA breach (P99 > 200ms)
 - **Transactions affected:** ~12,000 transactions experienced latency > 200ms; 0 transactions dropped
 - **SLA impact:** Monthly SLA metric reduced from 99.98% to 99.94% (still within 99.95% contractual target)
-- **Client notifications sent:** No — impact was within SLA tolerance
-- **Revenue impact:** None — no transactions were rejected
+- **Client notifications sent:** No - impact was within SLA tolerance
+- **Revenue impact:** None - no transactions were rejected
 
 ---
 
@@ -62,7 +62,7 @@ During a planned rolling JVM restart of the Falcon scoring cluster, the Coherenc
 1. **Why did latency spike?** Cache misses during Coherence partition transfer caused fallback to Oracle database reads.
 2. **Why were there cache misses?** Partitions were being transferred between nodes and were temporarily unavailable for reads.
 3. **Why did partition transfer take 8 minutes?** Each partition contained ~2.5GB of risk scoring data (total ~320GB transferred), and inter-node bandwidth was limited by the 10Gbps network link.
-4. **Why wasn't the cache warmed up before restart?** The deployment runbook did not include a pre-restart cache warmup step — the assumption was that partition redistribution would be near-instant.
+4. **Why wasn't the cache warmed up before restart?** The deployment runbook did not include a pre-restart cache warmup step - the assumption was that partition redistribution would be near-instant.
 5. **Why was this assumption wrong?** The cache dataset has grown 3x in the last 6 months due to new client onboarding, and partition transfer times were never re-baselined.
 
 ### Contributing factors
@@ -100,10 +100,10 @@ During a planned rolling JVM restart of the Falcon scoring cluster, the Coherenc
 - Automated Splunk alert fired within 2 minutes of latency increase
 - On-call engineer responded in under 1 minute
 - Bridge call stood up quickly, decision made in < 5 minutes
-- No transactions were dropped — system degraded gracefully
+- No transactions were dropped - system degraded gracefully
 
 ### What could be improved
-- Runbook assumed partition transfers were fast — need to validate assumptions after data growth
+- Runbook assumed partition transfers were fast - need to validate assumptions after data growth
 - No dedicated monitoring for partition transfer progress
 - Rolling restart should enforce health gates between nodes
 

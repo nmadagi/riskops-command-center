@@ -1,5 +1,5 @@
 // ============================================================================
-// Jenkinsfile — Risk Scoring Platform CI/CD Pipeline
+// Jenkinsfile - Risk Scoring Platform CI/CD Pipeline
 // ============================================================================
 // Pipeline: Build → Test → Stage → Approve → Deploy → Validate
 // Trigger:  Webhook on merge to 'release/*' branches
@@ -193,7 +193,7 @@ pipeline {
                 sh '''
                     curl -X POST "${SLACK_WEBHOOK}" \
                         -H "Content-Type: application/json" \
-                        -d '{"text":"🚀 DEPLOYMENT STARTING: '${APP_NAME}' '${RELEASE_VERSION}' to PRODUCTION (CAB: '${CAB_TICKET}', approved by: '${APPROVED_BY}')"}'
+                        -d '{"text":"DEPLOYMENT STARTING: '${APP_NAME}' '${RELEASE_VERSION}' to PRODUCTION (CAB: '${CAB_TICKET}', approved by: '${APPROVED_BY}')"}'
                 '''
 
                 // Hold batch jobs
@@ -228,11 +228,11 @@ pipeline {
                 failure {
                     script {
                         if (params.AUTO_ROLLBACK) {
-                            echo "VALIDATION FAILED — Initiating auto-rollback"
+                            echo "VALIDATION FAILED - Initiating auto-rollback"
                             sh '''
                                 curl -X POST "${SLACK_WEBHOOK}" \
                                     -H "Content-Type: application/json" \
-                                    -d '{"text":"🔴 ROLLBACK INITIATED: '${APP_NAME}' '${RELEASE_VERSION}' validation failed"}'
+                                    -d '{"text":"ROLLBACK INITIATED: '${APP_NAME}' '${RELEASE_VERSION}' validation failed"}'
                             '''
                             // Rollback would be triggered here
                         }
@@ -260,7 +260,7 @@ pipeline {
                 sh '''
                     curl -X POST "${SLACK_WEBHOOK}" \
                         -H "Content-Type: application/json" \
-                        -d '{"text":"✅ DEPLOYMENT COMPLETE: '${APP_NAME}' '${RELEASE_VERSION}' deployed to PRODUCTION successfully"}'
+                        -d '{"text":"DEPLOYMENT COMPLETE: '${APP_NAME}' '${RELEASE_VERSION}' deployed to PRODUCTION successfully"}'
                 '''
 
                 // Send deployment event to Splunk
@@ -281,7 +281,7 @@ pipeline {
             sh '''
                 curl -X POST "${SLACK_WEBHOOK}" \
                     -H "Content-Type: application/json" \
-                    -d '{"text":"🔴 PIPELINE FAILED: '${APP_NAME}' '${RELEASE_VERSION}' — Stage: '${env.STAGE_NAME}'"}'
+                    -d '{"text":"PIPELINE FAILED: '${APP_NAME}' '${RELEASE_VERSION}' - Stage: '${env.STAGE_NAME}'"}'
             '''
         }
     }

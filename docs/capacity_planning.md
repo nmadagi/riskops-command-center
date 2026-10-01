@@ -1,4 +1,4 @@
-# Capacity Planning — Risk Scoring Platform
+# Capacity Planning - Risk Scoring Platform
 
 > **Planning Horizon:** Q2-Q4 2026  
 > **Review Cadence:** Quarterly  
@@ -14,7 +14,7 @@
 | Falcon Scoring Nodes | 4 active | 4 active | 8 (license) | 50% | OK |
 | Coherence Heap (total) | 72GB / 144GB | 96GB / 144GB | 144GB | 67% peak | WATCH |
 | Coherence Cache Entries | 2.1B | 2.1B | ~3B (estimated) | 70% | WATCH |
-| Oracle DB Storage | 2.1TB / 5TB | — | 5TB | 42% | OK |
+| Oracle DB Storage | 2.1TB / 5TB | - | 5TB | 42% | OK |
 | Oracle Sessions | 120 avg | 200 peak | 500 max | 40% peak | OK |
 | Couchbase Memory | 12GB / 20GB | 15GB / 20GB | 20GB | 75% peak | WATCH |
 | Couchbase Ops/sec | 5,000 | 8,000 | 15,000 | 53% peak | OK |
@@ -31,9 +31,9 @@ Based on client onboarding pipeline and historical growth:
 
 | Quarter | Projected TPS (Peak) | Growth vs Current | Capacity Action |
 |---------|---------------------|-------------------|-----------------|
-| Q2 2026 | 20,000 | +11% | Monitor — within capacity |
+| Q2 2026 | 20,000 | +11% | Monitor - within capacity |
 | Q3 2026 | 22,500 | +25% | **Scale Falcon to 6 nodes** |
-| Q4 2026 | 25,000 | +39% | Approach limit — **scale to 8 nodes** |
+| Q4 2026 | 25,000 | +39% | Approach limit - **scale to 8 nodes** |
 
 ### Cache Growth
 
@@ -42,7 +42,7 @@ Coherence cache dataset growing ~15% per quarter due to new client onboarding:
 | Quarter | Estimated Cache Size | Heap Required | Nodes Required |
 |---------|---------------------|---------------|----------------|
 | Q2 2026 | 2.4B entries / 85GB | 10GB/node × 12 = 120GB | 12 (current) |
-| Q3 2026 | 2.8B entries / 98GB | 10GB/node × 12 = 120GB | 12 — **tight** |
+| Q3 2026 | 2.8B entries / 98GB | 10GB/node × 12 = 120GB | 12 - **tight** |
 | Q4 2026 | 3.2B entries / 112GB | **Exceeds 12-node capacity** | **Scale to 16 nodes** |
 
 ### Database Growth

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# deploy_validator.sh — Post-Deployment Validation Suite
+# deploy_validator.sh - Post-Deployment Validation Suite
 # ============================================================================
 # Purpose:  Comprehensive validation after risk platform releases. Checks
 #           endpoint health, Coherence cache consistency, Splunk ingestion,
@@ -161,7 +161,7 @@ validate_dynatrace() {
     elif [[ "$dt_agents" -gt 0 ]]; then
         check_warn "Dynatrace: only $dt_agents agents (expected >= 20)"
     else
-        check_warn "Dynatrace API unavailable — manual verification needed"
+        check_warn "Dynatrace API unavailable - manual verification needed"
     fi
 }
 
@@ -235,11 +235,11 @@ report_results() {
     echo "───────────────────────────────────────────────────────────────"
 
     if [[ "$FAILED_CHECKS" -eq 0 ]]; then
-        echo "  RESULT: ✓ DEPLOYMENT VALIDATED — Release $RELEASE_VERSION is GO"
+        echo "  RESULT: ✓ DEPLOYMENT VALIDATED - Release $RELEASE_VERSION is GO"
         echo "═══════════════════════════════════════════════════════════════"
         exit 0
     else
-        echo "  RESULT: ✗ DEPLOYMENT VALIDATION FAILED — $FAILED_CHECKS checks failed"
+        echo "  RESULT: ✗ DEPLOYMENT VALIDATION FAILED - $FAILED_CHECKS checks failed"
 
         if [[ "$ROLLBACK_ON_FAIL" == true ]]; then
             echo ""

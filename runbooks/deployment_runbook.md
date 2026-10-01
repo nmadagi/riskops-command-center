@@ -1,4 +1,4 @@
-# Deployment Runbook — Risk Scoring Platform
+# Deployment Runbook - Risk Scoring Platform
 
 > **Document Owner:** Production Support Team  
 > **Last Updated:** 2026-03-31  
@@ -10,13 +10,13 @@
 
 ### T-24 Hours
 - [ ] Change Request (CR) approved by CAB with scheduled maintenance window
-- [ ] Release notes reviewed — all JIRA tickets verified as QA-signed-off
+- [ ] Release notes reviewed - all JIRA tickets verified as QA-signed-off
 - [ ] Rollback plan documented and reviewed by on-call engineer
 - [ ] Release artifact checksums (SHA256) verified against build server
 - [ ] Notify stakeholders: ops team, client services, on-call rotation
 
 ### T-1 Hour
-- [ ] Confirm current production health via `health_check.sh` — all services green
+- [ ] Confirm current production health via `health_check.sh` - all services green
 - [ ] Snapshot current configuration in Git (`git tag pre-deploy-$(date +%Y%m%d)`)
 - [ ] Verify Splunk dashboards accessible and baseline metrics recorded
 - [ ] Confirm Dynatrace service flow shows normal transaction patterns
@@ -48,7 +48,7 @@ curl -sk "https://risk-gw.prod.internal:9443/gateway/metrics" | \
 ### Phase 2: Deploy Application
 
 ```bash
-# 4. Stop application servers (rolling — one node at a time)
+# 4. Stop application servers (rolling - one node at a time)
 for node in falcon-{01..04}.prod.internal; do
   ssh $node "systemctl stop websphere-risk"
   sleep 10
@@ -80,7 +80,7 @@ for node in falcon-{01..04}.prod.internal; do
   done
   
   [[ "$status" != "200" ]] && echo "ALERT: $node failed health gate" && exit 1
-  echo "Node $node is healthy — proceeding to next node"
+  echo "Node $node is healthy - proceeding to next node"
 done
 ```
 
@@ -108,7 +108,7 @@ curl -sk -X POST -H "Authorization: Bearer $CTM_TOKEN" \
 
 - [ ] Confirm all batch jobs resume successfully
 - [ ] Verify GoldenGate replication lag returns to baseline (< 2s)
-- [ ] Monitor for 1 hour — no SLA breaches
+- [ ] Monitor for 1 hour - no SLA breaches
 - [ ] Update CMDB with new version
 - [ ] Close Change Request
 - [ ] Send deployment completion notification to stakeholders

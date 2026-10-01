@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# coherence_monitor.sh — Oracle Coherence Cache Cluster Monitor
+# coherence_monitor.sh - Oracle Coherence Cache Cluster Monitor
 # ============================================================================
 # Purpose:  Monitors Coherence cache cluster health including member status,
 #           partition distribution, heap utilization, cache hit ratios, and
@@ -159,7 +159,7 @@ check_partitions() {
         printf "  %-30s orphaned=%s  endangered=%s  vulnerable=%s\n" "$svc_name:" "$orphaned" "$endangered" "$vulnerable"
 
         if [[ "$orphaned" -gt "$PARTITION_ORPHAN_WARN" ]]; then
-            alert "CRITICAL" "partitions" "Service $svc_name has $orphaned ORPHANED partitions — data loss risk"
+            alert "CRITICAL" "partitions" "Service $svc_name has $orphaned ORPHANED partitions - data loss risk"
             EXIT_CODE=2
         fi
 
@@ -186,7 +186,7 @@ check_heap_utilization() {
         local status="✓"
         if [[ "$pct" -ge "$HEAP_CRIT_PCT" ]]; then
             status="✗"
-            alert "CRITICAL" "heap" "Member $name heap at ${pct}% (${used}/${max}MB) — GC pressure imminent"
+            alert "CRITICAL" "heap" "Member $name heap at ${pct}% (${used}/${max}MB) - GC pressure imminent"
             EXIT_CODE=2
         elif [[ "$pct" -ge "$HEAP_WARN_PCT" ]]; then
             status="◎"
@@ -258,7 +258,7 @@ main() {
     mkdir -p "$LOG_DIR"
 
     echo "═══════════════════════════════════════════════════════════════"
-    echo "  Coherence Cache Cluster Monitor — $(timestamp)"
+    echo "  Coherence Cache Cluster Monitor - $(timestamp)"
     echo "  Target: ${COHERENCE_MGMT_HOST}:${COHERENCE_MGMT_PORT}"
     echo "  Mode: $([[ "$DRY_RUN" == true ]] && echo "DRY-RUN" || echo "LIVE")"
     echo "═══════════════════════════════════════════════════════════════"
@@ -272,7 +272,7 @@ main() {
 
     echo ""
     echo "───────────────────────────────────────────────────────────────"
-    echo "  Monitor complete — exit code: $EXIT_CODE"
+    echo "  Monitor complete - exit code: $EXIT_CODE"
     echo "═══════════════════════════════════════════════════════════════"
 
     exit "$EXIT_CODE"

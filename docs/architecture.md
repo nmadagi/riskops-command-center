@@ -1,4 +1,4 @@
-# System Architecture — Card Risk Platform
+# System Architecture - Card Risk Platform
 
 > **Scope:** End-to-end transaction risk scoring, fraud detection, and case management  
 > **Scale:** 15,000+ TPS peak, 99.95% uptime SLA, < 200ms P99 latency
@@ -101,11 +101,11 @@
 ### Batch Processing (Nightly)
 
 1. **Control-M** triggers EOD batch jobs at scheduled times
-2. `RISK_EOD_RECON` — reconciles daily transactions against issuer files
-3. `RISK_DAILY_SCORING` — recalculates risk scores with updated model parameters
-4. `RISK_CACHE_WARMUP` — pre-populates Coherence cache from Oracle for next day
-5. `RISK_FRAUD_REPORT` — generates fraud summary reports for operations team
-6. `RISK_ARCHIVE_PURGE` — archives aged data, purges staging tables
+2. `RISK_EOD_RECON` - reconciles daily transactions against issuer files
+3. `RISK_DAILY_SCORING` - recalculates risk scores with updated model parameters
+4. `RISK_CACHE_WARMUP` - pre-populates Coherence cache from Oracle for next day
+5. `RISK_FRAUD_REPORT` - generates fraud summary reports for operations team
+6. `RISK_ARCHIVE_PURGE` - archives aged data, purges staging tables
 
 ### Replication
 
@@ -143,7 +143,7 @@ DR Zone (prod-west-1)
 | Coherence heap (per node) | 6GB / 12GB | 8GB / 12GB | 12GB | 33% |
 | Oracle sessions | 120 | 200 | 500 | 60% |
 | Couchbase ops/sec | 5,000 | 8,000 | 15,000 | 47% |
-| Disk (Oracle data) | 2.1TB | — | 5TB | 58% |
+| Disk (Oracle data) | 2.1TB | - | 5TB | 58% |
 
 ---
 

@@ -20,10 +20,10 @@ _[2-3 sentences: What happened, what was the impact, what was the root cause]_
 |-----------|-------|--------|
 | HH:MM | First detection (alert name / monitoring tool) | Splunk / Dynatrace / Manual |
 | HH:MM | On-call engineer acknowledged | PagerDuty |
-| HH:MM | Investigation started | — |
-| HH:MM | Root cause identified | — |
-| HH:MM | Mitigation applied | — |
-| HH:MM | Service restored | — |
+| HH:MM | Investigation started | - |
+| HH:MM | Root cause identified | - |
+| HH:MM | Mitigation applied | - |
+| HH:MM | Service restored | - |
 | HH:MM | Monitoring confirmed stable | Splunk / Dynatrace |
 
 **Total duration:** X hours Y minutes  

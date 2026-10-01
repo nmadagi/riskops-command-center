@@ -1,12 +1,12 @@
 # ============================================================================
-# Dynatrace Custom Alerting Rules — Risk Platform
+# Dynatrace Custom Alerting Rules - Risk Platform
 # ============================================================================
 # Deploy via Dynatrace Settings API or Configuration-as-Code (Monaco)
 # Scope: Risk Platform host group and service tags
 # ============================================================================
 
 alerting_profiles:
-  - name: "Risk Platform — Critical"
+  - name: "Risk Platform - Critical"
     rules:
       - severity_level: AVAILABILITY
         delay_in_minutes: 0
@@ -27,7 +27,7 @@ alerting_profiles:
 
 custom_metric_alerts:
   # JVM Heap Memory
-  - name: "Risk Platform — JVM Heap > 90%"
+  - name: "Risk Platform - JVM Heap > 90%"
     description: "JVM heap utilization exceeding 90% on risk platform nodes"
     metric_id: "builtin:tech.jvm.memory.heap.usage"
     threshold: 90
@@ -43,7 +43,7 @@ custom_metric_alerts:
       - "production"
 
   # Response Time P99
-  - name: "Risk Platform — Scoring Latency P99 > 200ms"
+  - name: "Risk Platform - Scoring Latency P99 > 200ms"
     description: "Transaction scoring response time P99 exceeding SLA threshold"
     metric_id: "builtin:service.response.time"
     threshold: 200000  # microseconds
@@ -59,7 +59,7 @@ custom_metric_alerts:
       - "production"
 
   # Error Rate
-  - name: "Risk Platform — Error Rate > 1%"
+  - name: "Risk Platform - Error Rate > 1%"
     description: "Service error rate exceeding 1% threshold"
     metric_id: "builtin:service.errors.total.rate"
     threshold: 1
@@ -74,7 +74,7 @@ custom_metric_alerts:
       - "risk-platform"
 
   # GC Suspension Time
-  - name: "Risk Platform — GC Suspension > 500ms"
+  - name: "Risk Platform - GC Suspension > 500ms"
     description: "JVM garbage collection suspension time impacting transaction processing"
     metric_id: "builtin:tech.jvm.memory.gc.suspensionTime"
     threshold: 500
@@ -88,7 +88,7 @@ custom_metric_alerts:
       - "risk-platform"
 
   # Thread Count
-  - name: "Risk Platform — Thread Pool Exhaustion"
+  - name: "Risk Platform - Thread Pool Exhaustion"
     description: "Active threads approaching pool maximum"
     metric_id: "builtin:tech.jvm.threads.count"
     threshold: 450  # Pool max typically 500
@@ -101,7 +101,7 @@ custom_metric_alerts:
       - "risk-platform"
 
   # Disk Usage
-  - name: "Risk Platform — Disk Usage > 85%"
+  - name: "Risk Platform - Disk Usage > 85%"
     description: "Disk space running low on risk platform hosts"
     metric_id: "builtin:host.disk.usedPct"
     threshold: 85
@@ -115,7 +115,7 @@ custom_metric_alerts:
       - "risk-platform"
 
   # CPU Usage
-  - name: "Risk Platform — CPU > 80% sustained"
+  - name: "Risk Platform - CPU > 80% sustained"
     description: "High CPU utilization sustained over 10 minutes"
     metric_id: "builtin:host.cpu.usage"
     threshold: 80
@@ -129,13 +129,13 @@ custom_metric_alerts:
       - "risk-platform"
 
 notification_integrations:
-  - name: "PagerDuty — Risk Platform"
+  - name: "PagerDuty - Risk Platform"
     type: PAGER_DUTY
     integration_key: "${PD_ROUTING_KEY}"
-    alerting_profile: "Risk Platform — Critical"
+    alerting_profile: "Risk Platform - Critical"
 
-  - name: "Slack — Risk Ops Critical"
+  - name: "Slack - Risk Ops Critical"
     type: SLACK
     webhook_url: "${SLACK_WEBHOOK_URL}"
     channel: "#risk-ops-critical"
-    alerting_profile: "Risk Platform — Critical"
+    alerting_profile: "Risk Platform - Critical"

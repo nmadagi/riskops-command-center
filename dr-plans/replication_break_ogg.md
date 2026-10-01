@@ -1,4 +1,4 @@
-# Disaster Recovery — Oracle GoldenGate Replication Break
+# Disaster Recovery - Oracle GoldenGate Replication Break
 
 > **RTO:** 1 hour | **RPO:** < 1 minute  
 > **Scenario:** GoldenGate extract or replicat process failure, trail file corruption, or network-induced replication break
@@ -57,7 +57,7 @@ curl -sk -X POST -H "Authorization: Bearer $CTM_TOKEN" \
 curl -sk -X POST -H "Authorization: Bearer $CTM_TOKEN" \
   "$CONTROLM_API/run/jobs/hold?jobname=RISK_EOD_RECON"
 
-# Note: Do NOT stop the scoring engines — they use cached data
+# Note: Do NOT stop the scoring engines - they use cached data
 # Cache staleness is acceptable for short periods
 ```
 
@@ -72,7 +72,7 @@ info extract ERISK1, detail
 start extract ERISK1
 EOF
 
-# If checkpoint is corrupted — re-position
+# If checkpoint is corrupted - re-position
 ./ggsci << EOF
 alter extract ERISK1, begin now
 start extract ERISK1

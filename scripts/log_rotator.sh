@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# log_rotator.sh — Automated Log Rotation & Archival
+# log_rotator.sh - Automated Log Rotation & Archival
 # ============================================================================
 # Purpose:  Manages log rotation for risk platform services across UNIX/Linux
 #           clusters. Compresses aged logs, archives to NFS, purges old files,
@@ -52,13 +52,13 @@ check_disk_space() {
     usage_pct=$(df "$path" 2>/dev/null | tail -1 | awk '{print $5}' | tr -d '%')
 
     if [[ "$usage_pct" -ge "$DISK_CRIT_PCT" ]]; then
-        log "CRITICAL" "Disk usage at ${usage_pct}% for $label ($path) — CRITICAL"
+        log "CRITICAL" "Disk usage at ${usage_pct}% for $label ($path) - CRITICAL"
         return 2
     elif [[ "$usage_pct" -ge "$DISK_WARN_PCT" ]]; then
         log "WARN" "Disk usage at ${usage_pct}% for $label ($path)"
         return 1
     fi
-    [[ "$VERBOSE" == true ]] && log "DEBUG" "Disk usage at ${usage_pct}% for $label ($path) — OK"
+    [[ "$VERBOSE" == true ]] && log "DEBUG" "Disk usage at ${usage_pct}% for $label ($path) - OK"
     return 0
 }
 
@@ -119,7 +119,7 @@ main() {
     [[ "$DRY_RUN" == false ]] && mkdir -p "$ARCHIVE_DIR"
 
     echo "═══════════════════════════════════════════════════════════════"
-    echo "  Log Rotation & Archival — $(timestamp)"
+    echo "  Log Rotation & Archival - $(timestamp)"
     echo "  Mode: $([[ "$DRY_RUN" == true ]] && echo "DRY-RUN" || echo "LIVE")"
     echo "  Retention: ${RETENTION_DAYS}d local, ${ARCHIVE_RETENTION_DAYS}d archive"
     echo "═══════════════════════════════════════════════════════════════"
@@ -144,7 +144,7 @@ main() {
 
     echo ""
     echo "═══════════════════════════════════════════════════════════════"
-    echo "  Log rotation complete — $(timestamp)"
+    echo "  Log rotation complete - $(timestamp)"
     echo "═══════════════════════════════════════════════════════════════"
 }
 

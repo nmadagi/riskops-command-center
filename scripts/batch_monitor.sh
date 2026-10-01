@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# batch_monitor.sh — Control-M Batch Job Status Monitor
+# batch_monitor.sh - Control-M Batch Job Status Monitor
 # ============================================================================
 # Purpose:  Monitors risk platform batch jobs in Control-M scheduler.
 #           Tracks job completion, detects failures, checks dependencies,
@@ -160,9 +160,9 @@ check_job() {
 
             # Escalate based on criticality
             case "$criticality" in
-                P1) trigger_pagerduty "$job_name" "CRITICAL: Batch job $job_name FAILED — $description" "critical" ;;
-                P2) trigger_pagerduty "$job_name" "HIGH: Batch job $job_name FAILED — $description" "high" ;;
-                P3) log "WARN" "P3 job $job_name failed — logged but not escalated" ;;
+                P1) trigger_pagerduty "$job_name" "CRITICAL: Batch job $job_name FAILED - $description" "critical" ;;
+                P2) trigger_pagerduty "$job_name" "HIGH: Batch job $job_name FAILED - $description" "high" ;;
+                P3) log "WARN" "P3 job $job_name failed - logged but not escalated" ;;
             esac
             ;;
         *)
@@ -237,7 +237,7 @@ main() {
     mkdir -p "$LOG_DIR"
 
     echo "═══════════════════════════════════════════════════════════════"
-    echo "  Control-M Batch Job Monitor — $(timestamp)"
+    echo "  Control-M Batch Job Monitor - $(timestamp)"
     echo "  API: ${CONTROLM_API}"
     echo "  Mode: $([[ "$DRY_RUN" == true ]] && echo "DRY-RUN" || echo "LIVE")"
     echo "═══════════════════════════════════════════════════════════════"
